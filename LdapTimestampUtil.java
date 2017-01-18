@@ -3,7 +3,6 @@ package pl.ppl.utils;
 import java.time.*;
 
 class LdapTimestampUtil {
-
 	/**
 	 * Microsoft world exist since since Jan 1, 1601 UTC
 	 */
@@ -34,10 +33,17 @@ class LdapTimestampUtil {
 	}
 
 	public static LocalDateTime ldapTimestampToLocalDate(long ldapTimestamp) {
+		return ldapTimestampToZonedDate(ldapTimestamp, ZoneId.systemDefault()).toLocalDateTime();
+	}
+
+	public static ZonedDateTime ldapTimestampToZonedDate(long ldapTimestamp, ZoneId zoneId) {
+		return ZonedDateTime.ofInstant(ldapTimestampToInstant(ldapTimestamp), zoneId);
+	}
+
+	public static Instant ldapTimestampToInstant(long ldapTimestamp) {
 		long ldapTimestampForBeginOfUnixTimestamp = zonedDateToLdapTimestamp(UNIX_MIN_DATE_TIME);
 		long epochSeconds =  ldapTimestampToSeconds (ldapTimestamp - ldapTimestampForBeginOfUnixTimestamp );
-		Instant instant = Instant.ofEpochSecond(epochSeconds);
-		return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+		return Instant.ofEpochSecond(epochSeconds);
 	}
 
 	/**
